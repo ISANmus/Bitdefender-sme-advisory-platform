@@ -1,0 +1,1 @@
+# Bitdefender-sme-advisory-platform
