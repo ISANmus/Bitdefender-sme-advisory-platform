@@ -1,0 +1,570 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: #172033;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* Navbar */
+
+.navbar {
+  height: 76px;
+  border-bottom: 1px solid #e7eaf0;
+  background: rgba(255, 255, 255, 0.96);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbarContent {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #006dff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.brandName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #172033;
+}
+
+.brandSubtext {
+  margin-top: 2px;
+  color: #7a8497;
+  font-size: 11px;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.navLinks > a:not(.navButton) {
+  color: #566074;
+  transition: color 0.2s ease;
+}
+
+.navLinks > a:not(.navButton):hover {
+  color: #006dff;
+}
+
+.navButton {
+  padding: 11px 20px;
+  background: #006dff;
+  color: white;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.navButton:hover {
+  background: #0057cc;
+}
+
+/* Hero */
+
+.hero {
+  background:
+    radial-gradient(circle at 80% 20%, rgba(0, 109, 255, 0.09), transparent 28%),
+    linear-gradient(180deg, #f7faff 0%, #ffffff 100%);
+  padding: 95px 0 105px;
+}
+
+.heroContent {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.eyebrow {
+  color: #006dff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  margin-bottom: 20px;
+}
+
+.heroText h1 {
+  color: #172033;
+  font-size: clamp(44px, 5vw, 66px);
+  line-height: 1.06;
+  letter-spacing: -2px;
+  max-width: 700px;
+}
+
+.heroText h1 span {
+  color: #006dff;
+}
+
+.heroDescription {
+  color: #606b80;
+  font-size: 18px;
+  line-height: 1.7;
+  max-width: 650px;
+  margin-top: 28px;
+}
+
+.heroActions {
+  display: flex;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.primaryButton {
+  background: #006dff;
+  color: white;
+}
+
+.primaryButton:hover {
+  background: #0057cc;
+}
+
+.secondaryButton {
+  border: 1px solid #d9deea;
+  background: white;
+  color: #30394b;
+}
+
+.secondaryButton:hover {
+  border-color: #006dff;
+  color: #006dff;
+}
+
+.assessmentInfo {
+  margin-top: 24px;
+  color: #8992a3;
+  font-size: 12px;
+}
+
+/* Example assessment */
+
+.heroCard {
+  background: white;
+  padding: 32px;
+  border-radius: 18px;
+  border: 1px solid #e6eaf1;
+  box-shadow: 0 24px 60px rgba(21, 39, 75, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.cardLabel {
+  color: #8b95a7;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.cardHeader h2 {
+  font-size: 20px;
+}
+
+.statusBadge {
+  background: #fff6dc;
+  color: #947000;
+  padding: 7px 12px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.scoreSection {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 30px 0;
+}
+
+.scoreCircle {
+  width: 104px;
+  height: 104px;
+  border: 9px solid #006dff;
+  border-radius: 50%;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding-top: 27px;
+  flex-shrink: 0;
+}
+
+.scoreNumber {
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.scorePercent {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.scoreText strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.scoreText p {
+  color: #707a8e;
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.category {
+  margin-top: 19px;
+}
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.categoryHeader strong {
+  color: #006dff;
+}
+
+.progressBackground {
+  height: 7px;
+  background: #edf0f5;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 20px;
+  background: #006dff;
+}
+
+.progress80 {
+  width: 80%;
+}
+
+.progress55 {
+  width: 55%;
+}
+
+.progress70 {
+  width: 70%;
+}
+
+/* Sections */
+
+.section {
+  padding: 105px 0;
+}
+
+.sectionHeading {
+  max-width: 680px;
+  margin: 0 auto 55px;
+  text-align: center;
+}
+
+.sectionHeading h2 {
+  font-size: 38px;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.sectionHeading > p:last-child {
+  margin-top: 18px;
+  color: #707a8e;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stepCard {
+  position: relative;
+  padding: 30px;
+  border: 1px solid #e6eaf1;
+  border-radius: 14px;
+  min-height: 225px;
+}
+
+.stepNumber {
+  font-size: 13px;
+  font-weight: 800;
+  color: #006dff;
+  margin-bottom: 35px;
+}
+
+.stepCard h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.stepCard p {
+  color: #747e90;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Features */
+
+.featuresSection {
+  background: #f7f9fc;
+  padding: 105px 0;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.featureCard {
+  background: white;
+  border: 1px solid #e6eaf1;
+  border-radius: 14px;
+  padding: 32px;
+}
+
+.featureIcon {
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+  background: #eaf3ff;
+  color: #006dff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.featureCard h3 {
+  font-size: 19px;
+  margin-bottom: 12px;
+}
+
+.featureCard p {
+  color: #707a8e;
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+/* CTA */
+
+.ctaSection {
+  background: #111c33;
+  color: white;
+  padding: 72px 0;
+}
+
+.ctaContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+}
+
+.lightEyebrow {
+  color: #6faeff;
+  margin-bottom: 14px;
+}
+
+.ctaContent h2 {
+  font-size: 34px;
+  margin-bottom: 14px;
+}
+
+.ctaContent p:not(.eyebrow) {
+  color: #b5bdcc;
+  max-width: 650px;
+  line-height: 1.6;
+}
+
+.ctaButton {
+  background: #ffffff;
+  color: #172033;
+  padding: 15px 23px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* Footer */
+
+footer {
+  padding: 32px 0;
+  background: #0b1426;
+  color: white;
+}
+
+.footerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footerContent strong {
+  font-size: 14px;
+}
+
+.footerContent p {
+  color: #788398;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+/* Responsive */
+
+@media (max-width: 950px) {
+  .heroContent {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+
+  .stepsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .container {
+    width: min(100% - 30px, 1180px);
+  }
+
+  .navbar {
+    height: auto;
+    padding: 15px 0;
+  }
+
+  .navLinks > a:not(.navButton) {
+    display: none;
+  }
+
+  .brandSubtext {
+    display: none;
+  }
+
+  .hero {
+    padding: 70px 0;
+  }
+
+  .heroText h1 {
+    font-size: 42px;
+  }
+
+  .heroActions {
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .heroCard {
+    padding: 24px;
+  }
+
+  .scoreSection {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .section,
+  .featuresSection {
+    padding: 75px 0;
+  }
+
+  .sectionHeading h2 {
+    font-size: 30px;
+  }
+
+  .stepsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaContent {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ctaButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .footerContent {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
