@@ -241,20 +241,22 @@ a {
   border: 9px solid #006dff;
   border-radius: 50%;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  padding-top: 27px;
   flex-shrink: 0;
 }
 
 .scoreNumber {
   font-size: 30px;
   font-weight: 800;
+  line-height: 1;
 }
 
 .scorePercent {
   font-size: 14px;
   font-weight: 700;
+  line-height: 1;
+  margin-left: 2px;
 }
 
 .scoreText strong {
@@ -566,5 +568,1127 @@ footer {
     align-items: flex-start;
     flex-direction: column;
     gap: 20px;
+  }
+}
+
+/* Assessment Page */
+
+.assessmentPage {
+  min-height: 100vh;
+  background: #f7f9fc;
+}
+
+.backHome {
+  color: #606b80;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.backHome:hover {
+  color: #006dff;
+}
+
+.assessmentContainer {
+  width: min(1050px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.assessmentHeader {
+  background: #ffffff;
+  border-bottom: 1px solid #e7eaf0;
+  padding: 55px 0 32px;
+}
+
+.assessmentProgressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+}
+
+.assessmentProgressHeader h1 {
+  font-size: 36px;
+  letter-spacing: -1px;
+  margin-bottom: 12px;
+}
+
+.assessmentProgressHeader > div:first-child > p:last-child {
+  color: #707a8e;
+  line-height: 1.6;
+  max-width: 650px;
+}
+
+.stepIndicator {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.stepIndicator span {
+  display: block;
+  color: #8992a3;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.stepIndicator strong {
+  font-size: 14px;
+}
+
+.assessmentProgress {
+  height: 5px;
+  background: #edf0f5;
+  border-radius: 50px;
+  margin-top: 32px;
+  overflow: hidden;
+}
+
+.assessmentProgressFill {
+  height: 100%;
+  width: 25%;
+  background: #006dff;
+}
+
+.assessmentContent {
+  padding: 48px 0 90px;
+}
+
+.assessmentLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 28px;
+  align-items: start;
+}
+
+.assessmentFormCard {
+  background: white;
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+  padding: 36px;
+}
+
+.formSectionHeader {
+  padding-bottom: 27px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.formSectionHeader h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.formSectionHeader p {
+  color: #747e90;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 9px;
+  color: #30394b;
+}
+
+.formGroup input,
+.formGroup select {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #d9deea;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0 14px;
+  color: #172033;
+  font-size: 14px;
+  outline: none;
+}
+
+.formGroup input:focus,
+.formGroup select:focus {
+  border-color: #006dff;
+  box-shadow: 0 0 0 3px rgba(0, 109, 255, 0.08);
+}
+
+.formGroup input::placeholder {
+  color: #a0a8b7;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.fieldHint {
+  display: block;
+  color: #8992a3;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+.formActions button {
+  border: 0;
+  cursor: pointer;
+}
+
+.formActions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.assessmentSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sidebarCard,
+.sidebarNotice {
+  background: white;
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+  padding: 26px;
+}
+
+.sidebarLabel {
+  color: #8992a3;
+  font-size: 10px;
+  letter-spacing: 1.3px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.assessmentStep {
+  display: flex;
+  gap: 13px;
+  margin-bottom: 22px;
+  opacity: 0.55;
+}
+
+.assessmentStep:last-child {
+  margin-bottom: 0;
+}
+
+.assessmentStep > span {
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  background: #edf0f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.assessmentStep strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.assessmentStep p {
+  color: #8992a3;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.activeAssessmentStep {
+  opacity: 1;
+}
+
+.activeAssessmentStep > span {
+  background: #006dff;
+  color: white;
+}
+
+.sidebarNotice {
+  background: #eef5ff;
+  border-color: #d7e7ff;
+}
+
+.sidebarNotice strong {
+  display: block;
+  color: #194d91;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.sidebarNotice p {
+  color: #537096;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 850px) {
+  .assessmentLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .assessmentSidebar {
+    order: -1;
+  }
+
+  .sidebarCard {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
+  .assessmentContainer {
+    width: min(100% - 30px, 1050px);
+  }
+
+  .assessmentProgressHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .stepIndicator {
+    text-align: left;
+  }
+
+  .assessmentProgressHeader h1 {
+    font-size: 30px;
+  }
+
+  .assessmentFormCard {
+    padding: 24px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .formActions {
+    flex-direction: column-reverse;
+  }
+
+  .formActions .primaryButton,
+  .formActions .secondaryButton {
+    width: 100%;
+  }
+}
+
+/* Cyber Trust Questionnaire */
+
+.questionOverallProgress {
+  height: 100%;
+  background: #006dff;
+  border-radius: 50px;
+  transition: width 0.3s ease;
+}
+
+.questionLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 28px;
+  align-items: start;
+}
+
+.questionMain {
+  min-width: 0;
+}
+
+.questionTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.questionTopBar > div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.questionNumber {
+  color: #687386;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.domainBadge {
+  background: #eaf3ff;
+  color: #006dff;
+  padding: 6px 10px;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.answeredCount {
+  color: #8992a3;
+  font-size: 11px;
+}
+
+.questionCard {
+  background: #ffffff;
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+  padding: 38px;
+}
+
+.questionDomain {
+  color: #006dff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.questionCard h2 {
+  color: #172033;
+  font-size: 26px;
+  line-height: 1.4;
+  letter-spacing: -0.5px;
+  max-width: 760px;
+}
+
+.questionDescription {
+  margin-top: 16px;
+  color: #717c90;
+  line-height: 1.65;
+  font-size: 14px;
+  max-width: 720px;
+}
+
+.answerOptions {
+  display: grid;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.answerOption {
+  width: 100%;
+  background: white;
+  border: 1px solid #dfe4ec;
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.answerOption:hover {
+  border-color: #8bbcff;
+  background: #f9fbff;
+}
+
+.selectedAnswer {
+  border-color: #006dff;
+  background: #f2f7ff;
+  box-shadow: 0 0 0 1px #006dff;
+}
+
+.answerCircle {
+  width: 34px;
+  height: 34px;
+  background: #f0f3f7;
+  color: #566074;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 800;
+}
+
+.selectedAnswer .answerCircle {
+  background: #006dff;
+  color: white;
+}
+
+.answerOption strong {
+  display: block;
+  font-size: 14px;
+  color: #263044;
+}
+
+.answerOption p {
+  color: #8992a3;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.naJustification {
+  margin-top: 22px;
+  padding: 20px;
+  background: #f8f9fc;
+  border-radius: 10px;
+}
+
+.naJustification label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 9px;
+}
+
+.naJustification textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  border: 1px solid #d9deea;
+  border-radius: 8px;
+  padding: 12px;
+  font: inherit;
+  outline: none;
+}
+
+.naJustification textarea:focus {
+  border-color: #006dff;
+  box-shadow: 0 0 0 3px rgba(0, 109, 255, 0.08);
+}
+
+.naJustification span {
+  display: block;
+  color: #8992a3;
+  font-size: 10px;
+  margin-top: 7px;
+}
+
+.questionNavigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 28px;
+  margin-top: 30px;
+  border-top: 1px solid #edf0f5;
+}
+
+.questionNavigation button {
+  border: 0;
+  cursor: pointer;
+}
+
+.questionNavigation .primaryButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.questionBackButton {
+  background: transparent;
+  color: #596477;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 12px 0;
+}
+
+.questionBackButton:disabled {
+  color: #b7bdc8;
+  cursor: not-allowed;
+}
+
+.questionSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sidebarOrganisation {
+  display: block;
+  color: #263044;
+  font-size: 16px;
+}
+
+.organisationSummary {
+  margin-top: 20px;
+  border-top: 1px solid #edf0f5;
+  padding-top: 17px;
+}
+
+.organisationSummary div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 11px;
+  font-size: 12px;
+}
+
+.organisationSummary div:last-child {
+  margin-bottom: 0;
+}
+
+.organisationSummary span {
+  color: #8992a3;
+}
+
+.organisationSummary strong {
+  color: #343e51;
+}
+
+@media (max-width: 850px) {
+  .questionLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .questionSidebar {
+    order: -1;
+  }
+}
+
+@media (max-width: 650px) {
+  .questionCard {
+    padding: 24px;
+  }
+
+  .questionCard h2 {
+    font-size: 22px;
+  }
+
+  .questionTopBar {
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: column;
+  }
+
+  .questionNavigation {
+    gap: 15px;
+    flex-direction: column-reverse;
+  }
+
+  .questionNavigation button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Readiness Results */
+
+.resultsProgressFill {
+  width: 75%;
+  height: 100%;
+  background: #006dff;
+  border-radius: 50px;
+}
+
+.resultsSection {
+  padding: 48px 0 90px;
+}
+
+.resultsLoading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #687386;
+  font-size: 14px;
+}
+
+.resultsHero {
+  background: #ffffff;
+  border: 1px solid #e5e9f0;
+  border-radius: 16px;
+  padding: 38px;
+}
+
+.resultsScore {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.largeScoreCircle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 11px solid #006dff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.largeScoreCircle span {
+  font-size: 38px;
+  font-weight: 800;
+  color: #172033;
+}
+
+.largeScoreCircle small {
+  font-size: 15px;
+  font-weight: 800;
+  margin-top: 12px;
+}
+
+.resultsLabel {
+  color: #006dff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+  margin-bottom: 9px;
+}
+
+.resultsScore h2 {
+  font-size: 30px;
+  margin-bottom: 11px;
+}
+
+.resultsSummary {
+  max-width: 720px;
+  color: #687386;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.resultsNotice {
+  margin-top: 30px;
+  padding: 18px 20px;
+
+  background: #fff9e8;
+  border: 1px solid #f1dfac;
+  border-radius: 10px;
+}
+
+.resultsNotice strong {
+  display: block;
+  color: #735c1c;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.resultsNotice p {
+  color: #806d3b;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.resultStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  margin-top: 22px;
+}
+
+.resultStatCard {
+  background: white;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  padding: 21px;
+}
+
+.resultStatCard span {
+  display: block;
+  color: #7c8698;
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.resultStatCard strong {
+  color: #263044;
+  font-size: 25px;
+}
+
+.positiveStat strong {
+  color: #16825d;
+}
+
+.gapStat strong {
+  color: #c95742;
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
+  gap: 22px;
+
+  margin-top: 22px;
+}
+
+.resultsCard {
+  background: white;
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+  padding: 30px;
+}
+
+.resultsCardHeader {
+  padding-bottom: 21px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+.resultsCardHeader h2 {
+  font-size: 20px;
+}
+
+.domainResultsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.domainResultRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  min-height: 53px;
+
+  border-bottom: 1px solid #f0f2f5;
+  font-size: 13px;
+}
+
+.domainResultRow:last-child {
+  border-bottom: 0;
+}
+
+.domainResultRow > span:first-child {
+  font-weight: 600;
+  color: #424c5e;
+}
+
+.domainStatus {
+  padding: 6px 10px;
+  border-radius: 50px;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.statusImplemented {
+  background: #e8f8f0;
+  color: #15724f;
+}
+
+.statusGap {
+  background: #fff0ed;
+  color: #a94735;
+}
+
+.statusNA {
+  background: #eef1f5;
+  color: #657084;
+}
+
+.profileResultList {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileResultList > div {
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.profileResultList > div:last-child {
+  border-bottom: 0;
+}
+
+.profileResultList span {
+  display: block;
+  color: #8992a3;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+
+.profileResultList strong {
+  color: #374154;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.gapsSection {
+  margin-top: 60px;
+}
+
+.resultsSectionHeading {
+  max-width: 700px;
+  margin-bottom: 27px;
+}
+
+.resultsSectionHeading h2 {
+  font-size: 29px;
+  margin-bottom: 10px;
+}
+
+.resultsSectionHeading > p:last-child {
+  color: #747e90;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.gapCards {
+  display: grid;
+  gap: 17px;
+}
+
+.gapRecommendationCard {
+  display: flex;
+  gap: 25px;
+
+  background: white;
+
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+
+  padding: 28px;
+}
+
+.gapNumber {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 9px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background: #fff0ed;
+  color: #b44d3b;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.gapContent {
+  flex: 1;
+}
+
+.gapDomain {
+  color: #c95742;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  margin-bottom: 7px;
+}
+
+.gapContent h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.gapIssue {
+  color: #707a8e;
+  font-size: 13px;
+  line-height: 1.6;
+
+  margin-bottom: 20px;
+}
+
+.recommendationBox,
+.bitdefenderBox {
+  padding: 16px 18px;
+  border-radius: 9px;
+}
+
+.recommendationBox {
+  background: #f7f9fc;
+}
+
+.bitdefenderBox {
+  margin-top: 10px;
+
+  background: #eef5ff;
+  border: 1px solid #dbe9ff;
+}
+
+.recommendationBox strong,
+.bitdefenderBox strong {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.recommendationBox p,
+.bitdefenderBox p {
+  color: #657084;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.bitdefenderBox strong {
+  color: #17549e;
+}
+
+.bitdefenderBox p {
+  color: #4d6d93;
+}
+
+.noGapsCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 17px;
+
+  padding: 27px;
+
+  background: white;
+
+  border: 1px solid #dbece3;
+  border-radius: 14px;
+}
+
+.noGapsCard > span {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background: #e8f8f0;
+  color: #16825d;
+
+  font-weight: 800;
+}
+
+.noGapsCard h3 {
+  font-size: 17px;
+  margin-bottom: 7px;
+}
+
+.noGapsCard p {
+  color: #707a8e;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.nextStepCard {
+  margin-top: 50px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 35px;
+
+  padding: 34px;
+
+  background: #111c33;
+
+  border-radius: 14px;
+
+  color: white;
+}
+
+.nextStepCard > div {
+  max-width: 700px;
+}
+
+.nextStepCard h2 {
+  font-size: 24px;
+  margin-bottom: 9px;
+}
+
+.nextStepCard > div > p:last-child {
+  color: #aeb7c8;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.nextStepCard .primaryButton:disabled {
+  background: #556070;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.resultsActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+
+  margin-top: 30px;
+}
+
+.resultButton {
+  border: 1px solid #d9deea;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+@media (max-width: 850px) {
+  .resultStatsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .resultsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .nextStepCard {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 650px) {
+  .resultsHero {
+    padding: 25px;
+  }
+
+  .resultsScore {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .largeScoreCircle {
+    width: 110px;
+    height: 110px;
+  }
+
+  .largeScoreCircle span {
+    font-size: 32px;
+  }
+
+  .resultStatsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .gapRecommendationCard {
+    flex-direction: column;
+    padding: 23px;
+  }
+
+  .nextStepCard {
+    padding: 25px;
+  }
+
+  .nextStepCard .primaryButton {
+    width: 100%;
+  }
+
+  .resultsActions {
+    flex-direction: column;
+  }
+
+  .resultsActions a,
+  .resultsActions button {
+    width: 100%;
   }
 }
