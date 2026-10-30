@@ -57,8 +57,11 @@ export default function ResultsPage() {
 
     const result = analyseReadiness(
       cyberTrustQuestions,
-      answers
-    );
+      answers,
+      savedProfile
+      ? JSON.parse(savedProfile)
+      : undefined
+);
 
     setAnalysis(result);
   }, [router]);
@@ -389,7 +392,7 @@ export default function ResultsPage() {
                         {gap.bitdefenderCapability && (
                           <div className="bitdefenderBox">
                             <strong>
-                              Relevant Bitdefender Capability
+                              Security Capability & Bitdefender Alignment
                             </strong>
 
                             <p>
@@ -422,13 +425,12 @@ export default function ResultsPage() {
               </p>
             </div>
 
-            <button
-              type="button"
+            <Link
+              href="/assessment/recommendations"
               className="primaryButton"
-              disabled
-            >
-              View Recommendations →
-            </button>
+              >
+                View Recommendations →
+            </Link>
           </section>
 
           <div className="resultsActions">

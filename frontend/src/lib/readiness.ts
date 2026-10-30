@@ -3,13 +3,26 @@ import {
   CyberTrustQuestion,
 } from "@/data/cyberTrustQuestions";
 
+import { recommendations } from "@/data/recommendations";
+
+import {
+  evaluateEndpointRisk,
+  OrganisationContext,
+  RiskModifier,
+} from "@/lib/riskContext";
+
+
 export interface DomainResult {
   id: string;
   domain: string;
   question: string;
   answer: CyberTrustAnswer;
-  status: "Implemented" | "Gap Identified" | "Not Applicable";
+  status:
+    | "Implemented"
+    | "Gap Identified"
+    | "Not Applicable";
 }
+
 
 export interface GapRecommendation {
   id: string;
@@ -17,7 +30,11 @@ export interface GapRecommendation {
   issue: string;
   recommendation: string;
   bitdefenderCapability?: string;
+  priority?: "High" | "Medium" | "Low";
+  riskLevel?: "Low" | "Medium" | "High";
+  riskExplanation?: string;
 }
+
 
 export interface ReadinessAnalysis {
   score: number;
@@ -35,82 +52,23 @@ export interface ReadinessAnalysis {
   gaps: GapRecommendation[];
 }
 
-interface RecommendationMapping {
-  recommendation: string;
-  bitdefenderCapability?: string;
-}
-
-const recommendationMappings: Record<string, RecommendationMapping> = {
-  "risk-management-1": {
-    recommendation:
-      "Establish a documented cybersecurity risk management process to identify, assess, prioritise, and review cybersecurity risks regularly.",
-    bitdefenderCapability:
-      "GravityZone risk and security posture visibility may support the identification of endpoint-related risks.",
-  },
-
-  "compliance-1": {
-    recommendation:
-      "Identify the legal, regulatory, contractual, and cybersecurity requirements relevant to the organisation and maintain a record of applicable obligations.",
-  },
-
-  "training-awareness-1": {
-    recommendation:
-      "Introduce regular cybersecurity awareness training covering phishing, password security, social engineering, malware, and incident reporting.",
-  },
-
-  "asset-management-1": {
-    recommendation:
-      "Maintain an up-to-date inventory of hardware, software, endpoints, and other important IT assets.",
-    bitdefenderCapability:
-      "GravityZone endpoint visibility can support the organisation in understanding protected endpoint assets.",
-  },
-
-  "data-protection-1": {
-    recommendation:
-      "Identify sensitive and business-critical information, define appropriate handling requirements, and implement controls to protect it from unauthorised access or loss.",
-    bitdefenderCapability:
-      "GravityZone security controls may complement data protection measures through endpoint, device, and threat protection capabilities.",
-  },
-
-  "backups-1": {
-    recommendation:
-      "Establish regular backups for critical information and systems, protect backup copies, and perform restoration testing to verify that recovery is possible.",
-  },
-
-  "system-security-1": {
-    recommendation:
-      "Define secure configuration standards and establish a process for identifying, prioritising, and applying operating system and application security updates.",
-    bitdefenderCapability:
-      "GravityZone Patch Management may assist with identifying and deploying supported software and operating system updates.",
-  },
-
-  "anti-malware-1": {
-    recommendation:
-      "Deploy centrally managed endpoint security across company endpoints and servers and regularly review their protection status.",
-    bitdefenderCapability:
-      "Bitdefender GravityZone endpoint protection can provide malware prevention and endpoint threat protection.",
-  },
-
-  "access-control-1": {
-    recommendation:
-      "Implement formal access control procedures, apply least privilege, remove unnecessary accounts, and periodically review user access rights.",
-  },
-
-  "incident-response-1": {
-    recommendation:
-      "Create and document an incident response process covering reporting, escalation, containment, investigation, recovery, and post-incident review.",
-    bitdefenderCapability:
-      "GravityZone EDR/XDR capabilities may support security teams with endpoint detection, investigation, and response activities.",
-  },
-};
 
 export function analyseReadiness(
   questions: CyberTrustQuestion[],
-  answers: Record<string, CyberTrustAnswer>
+  answers: Record<string, CyberTrustAnswer>,
+  organisation?: OrganisationContext
 ): ReadinessAnalysis {
+
+  /*
+   * ----------------------------------------------------
+   * 1. Process assessment answers
+   * ----------------------------------------------------
+   */
+
   const domainResults: DomainResult[] = questions
     .filter((question) => answers[question.id])
     .map((question) => {
+
       const answer = answers[question.id];
 
       let status: DomainResult["status"];
@@ -132,78 +90,239 @@ export function analyseReadiness(
       };
     });
 
-  const implementedCount = domainResults.filter(
-    (result) => result.answer === "yes"
-  ).length;
 
-  const gapCount = domainResults.filter(
-    (result) => result.answer === "no"
-  ).length;
+  /*
+   * ----------------------------------------------------
+   * 2. Calculate baseline counts
+   * ----------------------------------------------------
+   */
 
-  const notApplicableCount = domainResults.filter(
-    (result) => result.answer === "na"
-  ).length;
+  const implementedCount =
+    domainResults.filter(
+      (result) => result.answer === "yes"
+    ).length;
 
-  const applicableQuestions = implementedCount + gapCount;
+
+  const gapCount =
+    domainResults.filter(
+      (result) => result.answer === "no"
+    ).length;
+
+
+  const notApplicableCount =
+    domainResults.filter(
+      (result) => result.answer === "na"
+    ).length;
+
+
+  const applicableQuestions =
+    implementedCount + gapCount;
+
+
+  /*
+   * ----------------------------------------------------
+   * 3. Calculate preliminary readiness score
+   * ----------------------------------------------------
+   */
 
   const score =
     applicableQuestions > 0
-      ? Math.round((implementedCount / applicableQuestions) * 100)
+      ? Math.round(
+          (implementedCount /
+            applicableQuestions) *
+            100
+        )
       : 0;
+
+
+  /*
+   * ----------------------------------------------------
+   * 4. Determine readiness level
+   * ----------------------------------------------------
+   */
 
   let level: string;
   let summary: string;
 
+
   if (applicableQuestions === 0) {
+
     level = "Insufficient Data";
+
     summary =
       "There is not enough applicable information to determine a preliminary cybersecurity readiness result.";
+
   } else if (score >= 80) {
+
     level = "Strong Baseline";
 
     summary =
       "The organisation demonstrates a strong cybersecurity baseline across the areas assessed. Remaining gaps should still be addressed before considering formal Cyber Trust certification readiness.";
+
   } else if (score >= 60) {
+
     level = "Developing Baseline";
 
     summary =
       "The organisation has implemented several important cybersecurity practices, but identified gaps should be addressed to strengthen its overall Cyber Trust preparedness.";
+
   } else {
+
     level = "Needs Improvement";
 
     summary =
       "The assessment identified several cybersecurity gaps. The organisation should prioritise these areas before considering itself prepared for a formal Cyber Trust assessment.";
+
   }
 
-  const gaps: GapRecommendation[] = domainResults
-    .filter((result) => result.answer === "no")
-    .map((result) => {
-      const mapping = recommendationMappings[result.id];
 
-      return {
-        id: result.id,
-        domain: result.domain,
-        issue: result.question,
-        recommendation:
-          mapping?.recommendation ??
-          "Review the identified cybersecurity gap and establish an appropriate security control.",
-        bitdefenderCapability: mapping?.bitdefenderCapability,
-      };
-    });
+  /*
+   * ----------------------------------------------------
+   * 5. Evaluate organisation-level endpoint risk
+   * ----------------------------------------------------
+   */
+
+  let endpointRisk:
+    | RiskModifier
+    | undefined;
+
+
+  if (organisation) {
+
+    endpointRisk =
+      evaluateEndpointRisk(
+        organisation
+      );
+
+  }
+
+
+  /*
+   * ----------------------------------------------------
+   * 6. Convert identified gaps into recommendations
+   * ----------------------------------------------------
+   */
+
+  const gaps: GapRecommendation[] =
+    domainResults
+
+      .filter(
+        (result) =>
+          result.answer === "no"
+      )
+
+      .map((result) => {
+
+        const matchedRecommendation =
+          recommendations.find(
+            (item) =>
+              item.domain ===
+              result.domain
+          );
+
+
+        /*
+         * Default values if a domain does not
+         * yet have a recommendation mapping.
+         */
+
+        const recommendation =
+          matchedRecommendation
+            ?.recommendation ??
+          "Review the identified cybersecurity gap and implement appropriate security controls.";
+
+
+        let riskLevel:
+          | "Low"
+          | "Medium"
+          | "High"
+          | undefined =
+          endpointRisk?.riskLevel;
+
+
+        /*
+         * Endpoint-related gaps should inherit
+         * the organisation's endpoint risk level.
+         */
+
+        if (
+          result.domain ===
+            "Anti-virus / Anti-malware" &&
+          endpointRisk
+        ) {
+
+          riskLevel =
+            endpointRisk.riskLevel;
+
+        }
+
+
+        return {
+
+          id: result.id,
+
+          domain: result.domain,
+
+          issue: result.question,
+
+          recommendation,
+
+          bitdefenderCapability:
+            matchedRecommendation &&
+            matchedRecommendation
+              .bitdefenderSolutions
+              .length > 0
+
+              ? `${matchedRecommendation.securityCapability} → ${matchedRecommendation.bitdefenderSolutions.join(", ")}`
+
+              : matchedRecommendation
+                ? matchedRecommendation.securityCapability
+                : undefined,
+
+          priority:
+            matchedRecommendation?.priority,
+
+          riskLevel,
+
+          riskExplanation:
+            result.domain ===
+              "Anti-virus / Anti-malware"
+              ? endpointRisk?.explanation
+              : undefined,
+        };
+
+      });
+
+
+  /*
+   * ----------------------------------------------------
+   * 7. Return complete analysis
+   * ----------------------------------------------------
+   */
 
   return {
+
     score,
+
     level,
+
     summary,
 
-    totalQuestions: questions.length,
+    totalQuestions:
+      questions.length,
+
     applicableQuestions,
 
     implementedCount,
+
     gapCount,
+
     notApplicableCount,
 
     domainResults,
+
     gaps,
+
   };
+
 }
