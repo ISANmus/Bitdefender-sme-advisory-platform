@@ -211,46 +211,54 @@ export default function ResultsPage() {
           </div>
 
           <div className="resultsGrid">
-            <section className="resultsCard">
-              <div className="resultsCardHeader">
-                <div>
-                  <p className="resultsLabel">
-                    ASSESSMENT BREAKDOWN
-                  </p>
+            
+<section className="resultsCard">
+  <div className="resultsCardHeader">
+    <div>
+      <p className="resultsLabel">
+        CYBER TRUST ALIGNMENT
+      </p>
 
-                  <h2>
-                    Cybersecurity Domains
-                  </h2>
-                </div>
+      <h2>Cyber Trust Requirement Comparison</h2>
+
+      <p>
+        Comparison of your organisation's responses against
+        the Cyber Trust-aligned baseline requirements.
+      </p>
+    </div>
+  </div>
+
+  <div className="domainResultsList">
+    {analysis.domainResults.map((result) => (
+      <div
+        className="domainResultRow"
+        key={result.id}
+      >
+        <div>
+          <strong>{result.domain}</strong>
+          <p>{result.question}</p>
+        </div>
+
+        <span
+          className={`domainStatus ${
+            result.answer === "yes"
+              ? "statusImplemented"
+              : result.answer === "no"
+                ? "statusGap"
+                : "statusNA"
+          }`}
+        >
+          {result.answer === "yes"
+            ? "Requirement Met"
+            : result.answer === "no"
+              ? "Gap Identified"
+              : "Not Applicable"}
+        </span>
               </div>
+            ))}
+          </div>
+        </section>
 
-              <div className="domainResultsList">
-                {analysis.domainResults.map(
-                  (result) => (
-                    <div
-                      className="domainResultRow"
-                      key={result.id}
-                    >
-                      <span>
-                        {result.domain}
-                      </span>
-
-                      <span
-                        className={`domainStatus ${
-                          result.answer === "yes"
-                            ? "statusImplemented"
-                            : result.answer === "no"
-                              ? "statusGap"
-                              : "statusNA"
-                        }`}
-                      >
-                        {result.status}
-                      </span>
-                    </div>
-                  )
-                )}
-              </div>
-            </section>
 
             <aside className="resultsCard">
               <div className="resultsCardHeader">
@@ -318,95 +326,6 @@ export default function ResultsPage() {
               )}
             </aside>
           </div>
-
-          <section className="gapsSection">
-            <div className="resultsSectionHeading">
-              <p className="resultsLabel">
-                SECURITY GAP ANALYSIS
-              </p>
-
-              <h2>
-                Areas requiring attention
-              </h2>
-
-              <p>
-                These recommendations are generated from controls marked as
-                not currently implemented.
-              </p>
-            </div>
-
-            {analysis.gaps.length === 0 ? (
-              <div className="noGapsCard">
-                <span>✓</span>
-
-                <div>
-                  <h3>
-                    No baseline gaps identified
-                  </h3>
-
-                  <p>
-                    All applicable controls in this preliminary assessment were
-                    marked as implemented. A more detailed assessment would
-                    still be required to evaluate formal Cyber Trust readiness.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="gapCards">
-                {analysis.gaps.map(
-                  (gap, index) => (
-                    <article
-                      className="gapRecommendationCard"
-                      key={gap.id}
-                    >
-                      <div className="gapNumber">
-                        {String(index + 1).padStart(
-                          2,
-                          "0"
-                        )}
-                      </div>
-
-                      <div className="gapContent">
-                        <p className="gapDomain">
-                          {gap.domain}
-                        </p>
-
-                        <h3>
-                          Security gap identified
-                        </h3>
-
-                        <p className="gapIssue">
-                          {gap.issue}
-                        </p>
-
-                        <div className="recommendationBox">
-                          <strong>
-                            Recommended Improvement
-                          </strong>
-
-                          <p>
-                            {gap.recommendation}
-                          </p>
-                        </div>
-
-                        {gap.bitdefenderCapability && (
-                          <div className="bitdefenderBox">
-                            <strong>
-                              Security Capability & Bitdefender Alignment
-                            </strong>
-
-                            <p>
-                              {gap.bitdefenderCapability}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </article>
-                  )
-                )}
-              </div>
-            )}
-          </section>
 
           <section className="nextStepCard">
             <div>
