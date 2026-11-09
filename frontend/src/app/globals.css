@@ -48,6 +48,13 @@ a {
   gap: 12px;
 }
 
+.brandLogo {
+  width: 120px;
+  height: 45px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .brandIcon {
   width: 40px;
   height: 40px;
@@ -917,6 +924,25 @@ footer {
   align-items: center;
 }
 
+.questionMetadata {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.questionMetadata span {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: #f0f5ff;
+  color: #2456a6;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .questionNumber {
   color: #687386;
   font-size: 12px;
@@ -1690,5 +1716,508 @@ footer {
   .resultsActions a,
   .resultsActions button {
     width: 100%;
+  }
+}
+
+
+/* =========================================
+   CYBER TRUST ASSESSMENT SCOPE SELECTION
+========================================= */
+
+.scopeSelectionGroup {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.scopeSectionTitle {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #172b4d;
+}
+
+.scopeCheckboxGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.scopeCheckboxOption {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px !important;
+  min-height: 76px;
+  border: 1px solid #dce3ed;
+  border-radius: 10px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s ease,
+              background-color 0.2s ease;
+}
+
+.scopeCheckboxOption:hover {
+  border-color: #2878ed;
+  background: #f5f9ff;
+}
+
+.scopeCheckboxOption input[type="checkbox"] {
+  appearance: auto !important;
+  -webkit-appearance: checkbox !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 0 0 18px !important;
+  accent-color: #1677ee;
+  cursor: pointer;
+}
+
+.scopeCheckboxOption input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.scopeOptionText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scopeOptionText strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #172b4d;
+}
+
+.scopeOptionText small {
+  font-size: 12px;
+  color: #718096;
+}
+
+@media (max-width: 600px) {
+  .scopeCheckboxGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================
+   CYBER TRUST QUESTIONNAIRE REFINEMENTS
+========================================= */
+
+/* Assessment requirement section */
+
+.csaRequirementList {
+  margin-top: 26px;
+  padding: 22px;
+  background: #f7f9fc;
+  border: 1px solid #e5eaf2;
+  border-radius: 12px;
+}
+
+.csaRequirementList h3 {
+  color: #172033;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.csaRequirement {
+  padding: 17px;
+  background: #ffffff;
+  border: 1px solid #e6eaf1;
+  border-radius: 9px;
+}
+
+.csaRequirement + .csaRequirement {
+  margin-top: 12px;
+}
+
+.csaRequirementLabel {
+  color: #006dff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.csaRequirementText {
+  color: #374154;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* Focus area */
+
+.questionDescription {
+  margin-top: 18px;
+  padding: 12px 15px;
+  background: #f8faff;
+  border-left: 3px solid #006dff;
+  border-radius: 4px;
+  color: #657084;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* Answer section */
+
+.answerOptions {
+  margin-top: 26px;
+  gap: 12px;
+}
+
+.answerOption {
+  min-height: 76px;
+  padding: 17px 20px;
+  border-radius: 11px;
+}
+
+.answerOption:hover {
+  border-color: #8bbcff;
+  background: #f7faff;
+}
+
+.answerOption strong {
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.answerOption p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #778398;
+}
+
+.selectedAnswer {
+  border: 1.5px solid #006dff;
+  background: #f1f6ff;
+  box-shadow: 0 0 0 1px rgba(0, 109, 255, 0.08);
+}
+
+/* Domain progression warning */
+
+.progressionNotice {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 22px;
+  padding: 17px 19px;
+  background: #fff8eb;
+  border: 1px solid #f2dfb5;
+  border-left: 4px solid #d99b28;
+  border-radius: 9px;
+}
+
+.progressionNotice strong {
+  color: #805719;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.progressionNotice p {
+  color: #806d50;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+/* N/A justification */
+
+.naJustification {
+  background: #f7f9fc;
+  border: 1px solid #e5eaf2;
+  border-radius: 10px;
+}
+
+/* Question navigation */
+
+.questionNavigation {
+  margin-top: 30px;
+  padding-top: 24px;
+}
+
+.questionNavigation .primaryButton {
+  min-width: 180px;
+  border: none;
+  transition: background 0.2s ease;
+}
+
+.questionNavigation .primaryButton:not(:disabled):hover {
+  background: #0057cc;
+}
+
+/* Responsive questionnaire */
+
+@media (max-width: 650px) {
+  .csaRequirementList {
+    padding: 16px;
+  }
+
+  .csaRequirement {
+    padding: 14px;
+  }
+
+  .answerOption {
+    padding: 15px;
+  }
+
+  .questionNavigation .primaryButton {
+    width: 100%;
+  }
+}
+
+
+/* =========================================
+   CYBER TRUST RESULTS PAGE
+========================================= */
+
+/* Pillar breakdown */
+
+.pillarBreakdown,
+.domainBreakdown {
+  margin-top: 24px;
+}
+
+.pillarResultsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.pillarResultCard {
+  padding: 20px;
+  border: 1px solid #e5eaf2;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.pillarResultCard h3 {
+  margin: 0 0 18px;
+  color: #172033;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pillarResultStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pillarResultStats div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pillarResultStats span {
+  color: #778398;
+  font-size: 12px;
+}
+
+.pillarResultStats strong {
+  color: #172033;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Domain breakdown */
+
+.domainResultCounts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.domainResultCounts span {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #f1f5fa;
+  color: #43516a;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* CSA requirement comparison */
+
+.assessmentComparisonList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.assessmentResultRow {
+  padding: 20px;
+  border: 1px solid #e5eaf2;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.assessmentResultHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.assessmentResultHeader h3 {
+  margin: 5px 0;
+  color: #172033;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.assessmentResultMeta {
+  color: #778398;
+  font-size: 12px;
+}
+
+.assessmentRequirementDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.assessmentRequirementText {
+  padding: 15px;
+  background: #f7f9fc;
+  border: 1px solid #e8edf4;
+  border-radius: 8px;
+}
+
+.assessmentRequirementText strong {
+  display: block;
+  margin-bottom: 9px;
+  color: #1765d1;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.assessmentRequirementText p {
+  margin: 0;
+  color: #39465a;
+  font-size: 13px;
+  line-height: 1.75;
+  white-space: pre-line;
+}
+
+.assessmentResultFocus {
+  margin-top: 14px;
+  color: #68768c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.assessmentJustification {
+  margin-top: 14px;
+  padding: 14px;
+  border-left: 3px solid #d99b28;
+  border-radius: 5px;
+  background: #fff8eb;
+}
+
+.assessmentJustification strong {
+  color: #805719;
+  font-size: 12px;
+}
+
+.assessmentJustification p {
+  margin-top: 7px;
+  color: #806d50;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+/* Skipped requirements */
+
+.skippedRequirementsSection {
+  margin-top: 24px;
+}
+
+.skippedRequirementsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.skippedRequirementRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #e5eaf2;
+  border-radius: 9px;
+  background: #f8faff;
+}
+
+.skippedRequirementRow strong {
+  color: #172033;
+  font-size: 14px;
+}
+
+.skippedRequirementRow p {
+  margin-top: 5px;
+  color: #778398;
+  font-size: 12px;
+}
+
+.skippedRequirementRow > span {
+  color: #806d50;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.skippedDisclaimer {
+  margin-top: 18px;
+  padding: 13px 15px;
+  border-radius: 8px;
+  background: #f1f5fa;
+  color: #657084;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+/* Results responsive layout */
+
+@media (max-width: 700px) {
+  .pillarResultsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .assessmentResultHeader {
+    flex-direction: column;
+  }
+
+  .domainResultCounts {
+    justify-content: flex-start;
+  }
+
+  .skippedRequirementRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .assessmentResultRow {
+    padding: 15px;
   }
 }

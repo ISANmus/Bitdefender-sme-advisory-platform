@@ -1,13 +1,25 @@
+
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 
 import {
-  CyberTrustAnswer,
-  cyberTrustQuestions,
-} from "@/data/cyberTrustQuestions";
+  preparednessStatements,
+  type CyberTrustScope,
+} from "@/data/cyberTrustAssessmentData";
+
+import {
+  buildActivePreparednessItems,
+  clearLaterDomainAnswers,
+  getQuestionKey,
+  getScopeLabel,
+  type ProgressiveAnswer,
+  type ActivePreparednessItem,
+} from "@/lib/cyberTrustProgression";
 
 interface OrganisationProfile {
   organisationName: string;
@@ -18,156 +30,367 @@ interface OrganisationProfile {
   currentSecurity: string;
 }
 
+const VALID_SCOPES: CyberTrustScope[] = [
+  "classical",
+  "cloud",
+  "ot",
+  "ai",
+];
+
 export default function QuestionsPage() {
   const router = useRouter();
 
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [ready, setReady] = useState(false);
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] =
+    useState(0);
 
   const [organisationProfile, setOrganisationProfile] =
     useState<OrganisationProfile | null>(null);
 
+  const [selectedScopes, setSelectedScopes] =
+    useState<CyberTrustScope[]>(["classical"]);
+
   const [answers, setAnswers] = useState<
-    Record<string, CyberTrustAnswer>
+    Record<string, ProgressiveAnswer>
   >({});
 
-  const [justifications, setJustifications] = useState<
-    Record<string, string>
-  >({});
-
+  /*
+   * Load saved organisation information,
+   * selected scopes and previous answers.
+   */
   useEffect(() => {
-    const savedProfile = localStorage.getItem("organisationProfile");
+    try {
+      const savedProfile =
+        localStorage.getItem("organisationProfile");
 
-    if (savedProfile) {
-      setOrganisationProfile(JSON.parse(savedProfile));
-    }
+      if (savedProfile) {
+        setOrganisationProfile(JSON.parse(savedProfile));
+      }
 
-    const savedAnswers = localStorage.getItem("cyberTrustAnswers");
+      const savedScopes =
+        localStorage.getItem("cyberTrustScopes");
 
-    if (savedAnswers) {
-      setAnswers(JSON.parse(savedAnswers));
-    }
+      if (savedScopes) {
+        const parsedScopes: unknown = JSON.parse(savedScopes);
 
-    const savedJustifications = localStorage.getItem(
-      "cyberTrustJustifications"
-    );
+        if (Array.isArray(parsedScopes)) {
+          const validScopes = parsedScopes.filter(
+            (scope): scope is CyberTrustScope =>
+              VALID_SCOPES.includes(scope as CyberTrustScope)
+          );
 
-    if (savedJustifications) {
-      setJustifications(JSON.parse(savedJustifications));
+          setSelectedScopes(
+            Array.from(
+              new Set<CyberTrustScope>([
+                "classical",
+                ...validScopes,
+              ])
+            )
+          );
+        }
+      }
+
+      const savedAnswers =
+        localStorage.getItem(
+          "cyberTrustProgressiveAnswers"
+        );
+
+      if (savedAnswers) {
+        setAnswers(JSON.parse(savedAnswers));
+      }
+    } catch (error) {
+      console.error(
+        "Unable to load saved assessment data:",
+        error
+      );
+    } finally {
+      setReady(true);
     }
   }, []);
 
-  const currentQuestion = cyberTrustQuestions[currentQuestionIndex];
+  /*
+   * Build the active questionnaire dynamically.
+   *
+   * A No answer stops subsequent statements
+   * within the same domain and selected pillar.
+   */
+  const activeItems = useMemo(
+    () =>
+      buildActivePreparednessItems(
+        selectedScopes,
+        answers
+      ),
+    [selectedScopes, answers]
+  );
 
-  const currentAnswer = answers[currentQuestion.id];
+  const currentItem =
+    activeItems[currentQuestionIndex];
+
+  const currentAnswer =
+    currentItem
+      ? answers[currentItem.id]
+      : undefined;
+
+  const answeredCount = activeItems.filter(
+    (item) => Boolean(answers[item.id])
+  ).length;
+
+  const allQuestionsComplete =
+    activeItems.length > 0 &&
+    activeItems.every((item) => {
+      const response = answers[item.id];
+
+      if (!response) {
+        return false;
+      }
+
+      if (
+        response.answer === "na" &&
+        !response.justification?.trim()
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+  const canContinue =
+    Boolean(currentAnswer) &&
+    (
+      currentAnswer?.answer !== "na" ||
+      Boolean(currentAnswer.justification?.trim())
+    );
 
   const progress =
-    ((currentQuestionIndex + 1) / cyberTrustQuestions.length) * 100;
+    activeItems.length > 0
+      ? (answeredCount / activeItems.length) * 100
+      : 0;
 
-  function selectAnswer(answer: CyberTrustAnswer) {
-    const updatedAnswers = {
-      ...answers,
-      [currentQuestion.id]: answer,
-    };
-
+  /*
+   * Save answers whenever they change.
+   */
+  function saveAnswers(
+    updatedAnswers: Record<string, ProgressiveAnswer>
+  ) {
     setAnswers(updatedAnswers);
 
     localStorage.setItem(
-      "cyberTrustAnswers",
+      "cyberTrustProgressiveAnswers",
       JSON.stringify(updatedAnswers)
     );
   }
 
-  function updateJustification(value: string) {
-    const updatedJustifications = {
-      ...justifications,
-      [currentQuestion.id]: value,
+  /*
+   * Select Yes, No or Not Applicable.
+   */
+  function selectAnswer(
+    answer: ProgressiveAnswer["answer"]
+  ) {
+    if (!currentItem) {
+      return;
+    }
+
+    let updatedAnswers = {
+      ...answers,
+      [currentItem.id]: {
+        answer,
+        justification:
+          answer === "na"
+            ? answers[currentItem.id]?.justification ?? ""
+            : "",
+      },
     };
 
-    setJustifications(updatedJustifications);
+    /*
+     * A No clears later answers in the same
+     * domain and assessment pillar.
+     */
+    if (answer === "no") {
+      updatedAnswers = clearLaterDomainAnswers(
+        updatedAnswers,
+        currentItem
+      );
 
-    localStorage.setItem(
-      "cyberTrustJustifications",
-      JSON.stringify(updatedJustifications)
-    );
+      const currentPosition =
+        preparednessStatements.findIndex(
+          (item) =>
+            item.clause === currentItem.statement.clause
+        );
+
+      const currentDomain =
+        currentItem.statement.domain;
+
+      const currentScope =
+        currentItem.scope;
+
+      const updatedAnswersForCleanup = {
+        ...updatedAnswers,
+      };
+
+      /*
+       * Also clear justifications stored inside
+       * later answers for that same domain.
+       */
+      preparednessStatements.forEach(
+        (statement, index) => {
+          if (
+            statement.domain === currentDomain &&
+            index > currentPosition
+          ) {
+            const key = getQuestionKey(
+              statement.clause,
+              currentScope
+            );
+
+            delete updatedAnswersForCleanup[key];
+          }
+        }
+      );
+
+      updatedAnswers = updatedAnswersForCleanup;
+    }
+
+    saveAnswers(updatedAnswers);
   }
 
+  /*
+   * Update N/A justification.
+   */
+  function updateJustification(value: string) {
+    if (!currentItem) {
+      return;
+    }
+
+    const updatedAnswers = {
+      ...answers,
+      [currentItem.id]: {
+        answer: "na" as const,
+        justification: value,
+      },
+    };
+
+    saveAnswers(updatedAnswers);
+  }
+
+  /*
+   * Navigate to the next active statement.
+   */
   function goNext() {
     if (!canContinue) {
       return;
     }
 
-    if (currentQuestionIndex < cyberTrustQuestions.length - 1) {
-      setCurrentQuestionIndex((previous) => previous + 1);
+    if (
+      currentQuestionIndex <
+      activeItems.length - 1
+    ) {
+      setCurrentQuestionIndex(
+        (previous) => previous + 1
+      );
+
+      return;
     }
+
+    handleAnalyse();
   }
 
+  /*
+   * Navigate backwards without losing answers.
+   */
   function goPrevious() {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((previous) => previous - 1);
+      setCurrentQuestionIndex(
+        (previous) => previous - 1
+      );
     }
   }
 
+  /*
+   * Complete the preparedness assessment.
+   */
   function handleAnalyse() {
     if (!allQuestionsComplete) {
       return;
     }
 
     localStorage.setItem(
-      "cyberTrustAnswers",
+      "cyberTrustProgressiveAnswers",
       JSON.stringify(answers)
     );
 
     localStorage.setItem(
-      "cyberTrustJustifications",
-      JSON.stringify(justifications)
+      "cyberTrustAssessmentCompleted",
+      "true"
     );
 
     router.push("/assessment/results");
   }
 
-  const canContinue =
-    Boolean(currentAnswer) &&
-    !(
-      currentAnswer === "na" &&
-      !justifications[currentQuestion.id]?.trim()
+  /*
+   * Prevent rendering before localStorage loads.
+   */
+  if (!ready) {
+    return (
+      <main className="assessmentPage">
+        <div className="assessmentContainer">
+          Loading assessment...
+        </div>
+      </main>
     );
+  }
 
-  const allQuestionsComplete = cyberTrustQuestions.every((question) => {
-    const answer = answers[question.id];
+  if (!currentItem) {
+    return (
+      <main className="assessmentPage">
+        <div className="assessmentContainer">
+          <h2>No assessable statements found.</h2>
 
-    if (!answer) {
-      return false;
-    }
+          <p>
+            Please return to the organisation profile
+            and check the selected assessment scopes.
+          </p>
 
-    if (
-      answer === "na" &&
-      !justifications[question.id]?.trim()
-    ) {
-      return false;
-    }
-
-    return true;
-  });
-
-  const answeredCount = cyberTrustQuestions.filter(
-    (question) => answers[question.id]
-  ).length;
+          <Link
+            href="/assessment"
+            className="primaryButton"
+          >
+            Return to Organisation Profile
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="assessmentPage">
+
+      {/* Navigation */}
       <nav className="navbar">
         <div className="container navbarContent">
-          <Link href="/" className="brand">
-            <div>
-              <p className="brandName">
-                SME Security Advisor
-              </p>
 
-              <p className="brandSubtext">
-                Cyber Trust Readiness & Bitdefender Advisory
-              </p>
-            </div>
-          </Link>
+         
+      <Link href="/" className="brand">
+        <Image
+          src="/logo.png"
+          alt="SME Security Advisor Logo"
+          width={120}
+          height={45}
+          className="brandLogo"
+          priority
+        />
+
+        <div>
+          <p className="brandName">
+            SME Security Advisor
+          </p>
+
+          <p className="brandSubtext">
+            Cyber Trust Readiness & Bitdefender Advisory
+          </p>
+        </div>
+      </Link>
+
 
           <Link
             href="/assessment"
@@ -175,166 +398,315 @@ export default function QuestionsPage() {
           >
             ← Organisation Profile
           </Link>
+
         </div>
       </nav>
 
+
+      {/* Assessment Header */}
       <section className="assessmentHeader">
+
         <div className="assessmentContainer">
+
           <div className="assessmentProgressHeader">
+
             <div>
+
               <p className="eyebrow">
-                CYBER TRUST BASELINE ASSESSMENT
+                CYBER TRUST PREPAREDNESS ASSESSMENT
               </p>
 
-              <h1>Cybersecurity Assessment</h1>
+              <h1>
+                Cybersecurity Assessment
+              </h1>
 
               <p>
-                Review your organisation&apos;s current cybersecurity controls
-                and practices.
+                Evaluate your organisation against
+                the CSA Cyber Trust preparedness
+                statements.
               </p>
+
             </div>
 
             <div className="stepIndicator">
-              <span>Step 2 of 4</span>
-              <strong>Cybersecurity Assessment</strong>
+
+              <span>
+                Step 2 of 4
+              </span>
+
+              <strong>
+                Preparedness Assessment
+              </strong>
+
             </div>
+
           </div>
 
           <div className="assessmentProgress">
+
             <div
               className="questionOverallProgress"
-              style={{ width: `${progress}%` }}
+              style={{
+                width: `${progress}%`,
+              }}
             />
+
           </div>
+
         </div>
+
       </section>
 
+
+      {/* Assessment Content */}
       <section className="assessmentContent">
+
         <div className="assessmentContainer questionLayout">
+
           <div className="questionMain">
+
+            {/* Question Information */}
             <div className="questionTopBar">
+
               <div>
+
                 <span className="questionNumber">
-                  Question {currentQuestionIndex + 1} of{" "}
-                  {cyberTrustQuestions.length}
+                  Statement {currentQuestionIndex + 1} of{" "}
+                  {activeItems.length}
                 </span>
 
                 <span className="domainBadge">
-                  {currentQuestion.domain}
+                  {currentItem.statement.domain}
                 </span>
+
               </div>
 
               <span className="answeredCount">
                 {answeredCount} answered
               </span>
+
             </div>
 
+
+            {/* Question Card */}
             <div className="questionCard">
+
               <p className="questionDomain">
-                {currentQuestion.domain}
+                {currentItem.statement.domain}
               </p>
 
               <h2>
-                {currentQuestion.question}
+                {currentItem.statement.clause}
               </h2>
 
-              <p className="questionDescription">
-                {currentQuestion.description}
-              </p>
+              <div className="questionMetadata">
 
+                <span>
+                  {currentItem.statement.tier}
+                </span>
+
+                <span>
+                  {getScopeLabel(currentItem.scope)}
+                </span>
+
+              </div>
+
+
+              {/* CSA Requirement Statements */}
+              <div className="csaRequirementList">
+
+                <h3>
+                  Assessment Requirements
+                </h3>
+
+                {currentItem.scopeContent.map(
+                  (content, index) => (
+
+                    <div
+                      className="csaRequirement"
+                      key={`${content.scope}-${index}`}
+                    >
+
+                      <p className="csaRequirementLabel">
+                        {content.scope === "classical"
+                          ? "Classical Cybersecurity Baseline"
+                          : `${getScopeLabel(content.scope)} Requirement`}
+                      </p>
+
+                      <p className="csaRequirementText">
+                        {content.text}
+                      </p>
+
+                    </div>
+
+                  )
+                )}
+
+              </div>
+
+
+              {currentItem.statement.focusArea && (
+
+                <p className="questionDescription">
+                  Focus area:{" "}
+                  {currentItem.statement.focusArea}
+                </p>
+
+              )}
+
+
+              {/* Answer Options */}
               <div className="answerOptions">
+
                 <button
                   type="button"
                   className={`answerOption ${
-                    currentAnswer === "yes"
+                    currentAnswer?.answer === "yes"
                       ? "selectedAnswer"
                       : ""
                   }`}
                   onClick={() => selectAnswer("yes")}
                 >
+
                   <span className="answerCircle">
                     ✓
                   </span>
 
                   <div>
-                    <strong>Yes</strong>
+
+                    <strong>
+                      Yes
+                    </strong>
 
                     <p>
-                      This is currently implemented.
+                      The organisation has implemented
+                      and meets the stated requirement.
                     </p>
+
                   </div>
+
                 </button>
+
 
                 <button
                   type="button"
                   className={`answerOption ${
-                    currentAnswer === "no"
+                    currentAnswer?.answer === "no"
                       ? "selectedAnswer"
                       : ""
                   }`}
                   onClick={() => selectAnswer("no")}
                 >
+
                   <span className="answerCircle">
                     ×
                   </span>
 
                   <div>
-                    <strong>No</strong>
+
+                    <strong>
+                      No
+                    </strong>
 
                     <p>
-                      This is not currently implemented.
+                      The organisation has not
+                      implemented or does not meet
+                      the stated requirement.
                     </p>
+
                   </div>
+
                 </button>
+
 
                 <button
                   type="button"
                   className={`answerOption ${
-                    currentAnswer === "na"
+                    currentAnswer?.answer === "na"
                       ? "selectedAnswer"
                       : ""
                   }`}
                   onClick={() => selectAnswer("na")}
                 >
+
                   <span className="answerCircle">
                     —
                   </span>
 
                   <div>
-                    <strong>Not Applicable</strong>
+
+                    <strong>
+                      Not Applicable
+                    </strong>
 
                     <p>
-                      This does not apply to the organisation&apos;s
-                      environment.
+                      The requirement does not apply
+                      to the organisation's environment.
                     </p>
+
                   </div>
+
                 </button>
+
               </div>
 
-              {currentAnswer === "na" && (
+
+              {/* N/A Justification */}
+              {currentAnswer?.answer === "na" && (
+
                 <div className="naJustification">
+
                   <label htmlFor="naJustification">
-                    Why is this not applicable?
+                    Why is this requirement not applicable?
                   </label>
 
                   <textarea
                     id="naJustification"
                     value={
-                      justifications[currentQuestion.id] ?? ""
+                      currentAnswer.justification ?? ""
                     }
                     onChange={(event) =>
-                      updateJustification(event.target.value)
+                      updateJustification(
+                        event.target.value
+                      )
                     }
-                    placeholder="Provide a brief justification..."
+                    placeholder="Provide a justification..."
                   />
 
                   <span>
-                    A justification is required for a Not Applicable response.
+                    A justification is required before continuing.
                   </span>
+
                 </div>
+
               )}
 
+
+              {/* Progression Notice */}
+              {currentAnswer?.answer === "no" && (
+
+                <div className="progressionNotice">
+
+                  <strong>
+                    Domain progression stopped
+                  </strong>
+
+                  <p>
+                    Further statements in this domain
+                    will be skipped for{" "}
+                    {getScopeLabel(currentItem.scope)}.
+                    Other domains and selected pillars
+                    will continue to be assessed.
+                  </p>
+
+                </div>
+
+              )}
+
+
+              {/* Question Navigation */}
               <div className="questionNavigation">
+
                 <button
                   type="button"
                   className="questionBackButton"
@@ -344,32 +716,31 @@ export default function QuestionsPage() {
                   ← Previous
                 </button>
 
-                {currentQuestionIndex <
-                cyberTrustQuestions.length - 1 ? (
-                  <button
-                    type="button"
-                    className="primaryButton"
-                    onClick={goNext}
-                    disabled={!canContinue}
-                  >
-                    Next Question →
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="primaryButton"
-                    onClick={handleAnalyse}
-                    disabled={!allQuestionsComplete}
-                  >
-                    Analyse Readiness →
-                  </button>
-                )}
+
+                <button
+                  type="button"
+                  className="primaryButton"
+                  onClick={goNext}
+                  disabled={!canContinue}
+                >
+                  {currentQuestionIndex ===
+                  activeItems.length - 1
+                    ? "Complete Assessment →"
+                    : "Next Statement →"}
+                </button>
+
               </div>
+
             </div>
+
           </div>
 
+
+          {/* Sidebar */}
           <aside className="questionSidebar">
+
             <div className="sidebarCard">
+
               <p className="sidebarLabel">
                 ORGANISATION
               </p>
@@ -380,9 +751,13 @@ export default function QuestionsPage() {
               </strong>
 
               {organisationProfile && (
+
                 <div className="organisationSummary">
+
                   <div>
-                    <span>Employees</span>
+                    <span>
+                      Employees
+                    </span>
 
                     <strong>
                       {organisationProfile.employeeCount}
@@ -390,30 +765,64 @@ export default function QuestionsPage() {
                   </div>
 
                   <div>
-                    <span>Endpoints</span>
+                    <span>
+                      Endpoints
+                    </span>
 
                     <strong>
                       {organisationProfile.endpointCount}
                     </strong>
                   </div>
+
                 </div>
+
               )}
+
             </div>
 
+
+            <div className="sidebarCard">
+
+              <p className="sidebarLabel">
+                SELECTED ASSESSMENT PILLARS
+              </p>
+
+              {selectedScopes.map((scope) => (
+
+                <div
+                  className="selectedScopeItem"
+                  key={scope}
+                >
+                  ✓ {getScopeLabel(scope)}
+                </div>
+
+              ))}
+
+            </div>
+
+
             <div className="sidebarNotice">
+
               <strong>
                 About this assessment
               </strong>
 
               <p>
-                This prototype provides a preliminary cybersecurity readiness
-                screening. It does not constitute Cyber Trust certification or
-                replace assessment by an appointed certification body.
+                This platform provides a preliminary
+                Cyber Trust preparedness assessment.
+                It does not constitute official CSA
+                certification or replace assessment
+                by an appointed certification body.
               </p>
+
             </div>
+
           </aside>
+
         </div>
+
       </section>
+
     </main>
   );
 }

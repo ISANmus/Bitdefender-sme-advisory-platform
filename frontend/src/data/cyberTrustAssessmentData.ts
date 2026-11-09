@@ -6,9 +6,15 @@
  * - CS Preparedness Questionnaire
  * - CS Risk Assessment
  *
- * Keep source wording and clause references unchanged.
- * A null scope statement means the workbook marks that scope as not applicable
- * for that clause (blank or '#').
+ * IMPORTANT:
+ * Classical Cybersecurity is the baseline requirement.
+ * Cloud, OT and AI may contain additional scope-specific statements.
+ *
+ * A null scope statement means there is no additional
+ * scope-specific statement for that clause.
+ * The Classical baseline requirement still applies.
+ *
+ * Preserve all original CSA wording and clause references.
  */
 
 export type CyberTrustScope = "classical" | "cloud" | "ot" | "ai";
@@ -3653,3 +3659,37 @@ export const cyberTrustRiskScenarios: CyberTrustRiskScenario[] = [
     "sourceRow": 63
   }
 ];
+
+
+/**
+ * Returns all applicable statements for a selected scope.
+ *
+ * Classical is always the baseline.
+ * Additional scope-specific statements are included
+ * when available.
+ */
+export function getApplicableStatements(
+  item: PreparednessStatement,
+  scope: CyberTrustScope
+): string[] {
+  const classicalStatement = item.statements.classical;
+
+  if (!classicalStatement) {
+    return [];
+  }
+
+  if (scope === "classical") {
+    return [classicalStatement];
+  }
+
+  const additionalStatement = item.statements[scope];
+
+  if (!additionalStatement) {
+    return [classicalStatement];
+  }
+
+  return [
+    classicalStatement,
+    additionalStatement,
+  ];
+}

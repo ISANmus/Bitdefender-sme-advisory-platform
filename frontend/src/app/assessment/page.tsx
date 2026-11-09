@@ -1,11 +1,19 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type { CyberTrustScope } from "@/data/cyberTrustAssessmentData";
 
 export default function AssessmentPage() {
   const router = useRouter();
+  const [selectedScopes, setSelectedScopes] = useState<CyberTrustScope[]>([
+  "classical",
+  "cloud",
+  "ot",
+  "ai",
+  ]);
 
   const [formData, setFormData] = useState({
     organisationName: "",
@@ -35,6 +43,16 @@ export default function AssessmentPage() {
       JSON.stringify(formData)
     );
 
+      localStorage.setItem(
+    "cyberTrustScopes",
+    JSON.stringify(selectedScopes)
+    );
+
+    localStorage.removeItem("cyberTrustProgressiveAnswers");
+    localStorage.removeItem("cyberTrustProgressiveJustifications");
+    localStorage.removeItem("cyberTrustAnswers");
+    localStorage.removeItem("cyberTrustJustifications");
+
     router.push("/assessment/questions");
   }
 
@@ -50,8 +68,20 @@ export default function AssessmentPage() {
       <nav className="navbar">
         <div className="container navbarContent">
           <Link href="/" className="brand">
+            <Image
+              src="/logo.png"
+              alt="SME Security Advisor Logo"
+              width={120}
+              height={45}
+              className="brandLogo"
+              priority
+            />
+
             <div>
-              <p className="brandName">SME Security Advisor</p>
+              <p className="brandName">
+                SME Security Advisor
+              </p>
+
               <p className="brandSubtext">
                 Cyber Trust Readiness & Bitdefender Advisory
               </p>
@@ -266,6 +296,61 @@ export default function AssessmentPage() {
                   endpoint security solution.
                 </span>
               </div>
+
+              
+              
+              <div className="formGroup scopeSelectionGroup">
+                <label className="scopeSectionTitle">
+                  Assessment Scope
+                </label>
+
+                <p className="fieldHint">
+                  Classical Cybersecurity is mandatory. Select any
+                  additional pillars included in this assessment.
+                </p>
+
+                <div className="scopeCheckboxGrid">
+                  <label className="scopeCheckboxOption">
+                    <input
+                      type="checkbox"
+                      checked
+                      disabled
+                    />
+                    <span className="scopeOptionText">
+                      <strong>Classical Cybersecurity</strong>
+                      <small>Mandatory</small>
+                    </span>
+                  </label>
+
+                  {([
+                    ["cloud", "Cloud Security"],
+                    ["ot", "OT Security"],
+                    ["ai", "AI Security"],
+                  ] as [CyberTrustScope, string][]).map(([scope, label]) => (
+                    <label className="scopeCheckboxOption" key={scope}>
+                      <input
+                        type="checkbox"
+                        checked={selectedScopes.includes(scope)}
+                        onChange={(event) => {
+                          setSelectedScopes((previous) =>
+                            event.target.checked
+                              ? [...previous, scope]
+                              : previous.filter((item) => item !== scope)
+                          );
+                        }}
+                      />
+
+                      <span className="scopeOptionText">
+                        <strong>{label}</strong>
+                        <small>Additional pillar</small>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+
+
 
               <div className="formActions">
                 <Link href="/" className="secondaryButton">
